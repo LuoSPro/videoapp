@@ -15,7 +15,7 @@ public class AppGlobals {
         if (sApplication == null){
             //通过反射ActivityThread的currentApplication方法来得到Application
             try {
-                Method method = Class.forName("android.app.activityThread").getDeclaredMethod("currentApplication");
+                Method method = Class.forName("android.app.ActivityThread").getDeclaredMethod("currentApplication");
                 //因为currentApplication方法是不需要参数的，所以我们这里就直接传null进去即可
                 sApplication = (Application) method.invoke(null, null);
             } catch (NoSuchMethodException e) {

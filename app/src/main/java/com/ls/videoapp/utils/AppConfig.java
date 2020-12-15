@@ -4,6 +4,8 @@ import android.content.res.AssetManager;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.ls.videoapp.model.BottomBar;
 import com.ls.videoapp.model.Destination;
 
 import java.io.BufferedReader;
@@ -16,6 +18,8 @@ public class AppConfig {
 
     private static HashMap<String, Destination> sDestConfig;
 
+    private static BottomBar sBottomBar;
+
     public static HashMap<String, Destination> getDestConfig() {
         if (sDestConfig == null){
             //从destination.json文件中解析出sDestConfig对象
@@ -23,6 +27,14 @@ public class AppConfig {
             sDestConfig = JSON.parseObject(content,new TypeReference<HashMap<String,Destination>>(){}.getType());
         }
         return sDestConfig;
+    }
+
+    public static BottomBar getBottomBar(){
+        if (sBottomBar == null){
+            String content = parseFile("main_tabs_config.json");
+            sBottomBar = JSON.parseObject(content,BottomBar.class);
+        }
+        return sBottomBar;
     }
 
     public static String parseFile(String fileName) {

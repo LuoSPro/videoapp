@@ -1,7 +1,11 @@
 package com.ls.videoapp.utils;
 
 import android.content.ComponentName;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.ActivityNavigator;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
@@ -9,17 +13,23 @@ import androidx.navigation.NavGraphNavigator;
 import androidx.navigation.NavigatorProvider;
 import androidx.navigation.fragment.FragmentNavigator;
 
-import com.google.common.graph.ValueGraph;
+import com.ls.videoapp.FixFragmentNavigator;
 import com.ls.videoapp.model.Destination;
 
 import java.util.HashMap;
 
 public class NavGraphBuilder {
 
-    public static void build(NavController controller){
+    public static void build(NavController controller, FragmentActivity activity, int containerId){
         NavigatorProvider provider = controller.getNavigatorProvider();
         //取出NavigatorProvider中HashMap的对象
-        FragmentNavigator fragmentNavigator = provider.getNavigator(FragmentNavigator.class);
+//        FragmentNavigator fragmentNavigator = provider.getNavigator(FragmentNavigator.class);
+        //上面采用的是系统内置的navigator，内部navigate方法切换fragment的时候采用的是replace方法，对系统的资源消耗很大
+        //所以我们采用自定义navigator，在重写的navigate方法里面，采用hide和show方法去切换fragment
+        FixFragmentNavigator fragmentNavigator = new FixFragmentNavigator(activity,activity.getSupportFragmentManager(),containerId);
+        //除了系统的内置的4中navigator，现在我们添加了第五种自定义navigator
+        provider.addNavigator(fragmentNavigator);
+
         ActivityNavigator activityNavigator = provider.getNavigator(ActivityNavigator.class);
 
         NavGraph navGraph = new NavGraph(new NavGraphNavigator(provider));
