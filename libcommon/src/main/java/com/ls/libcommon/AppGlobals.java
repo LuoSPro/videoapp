@@ -1,4 +1,4 @@
-package com.ls.videoapp.utils;
+package com.ls.libcommon;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -6,6 +6,9 @@ import android.app.Application;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * 随着后期的开发，我们将一些类下沉，放到一个公共的库，供大家一起使用
+ */
 public class AppGlobals {
 
     private static Application sApplication;
@@ -17,7 +20,7 @@ public class AppGlobals {
             try {
                 Method method = Class.forName("android.app.ActivityThread").getDeclaredMethod("currentApplication");
                 //因为currentApplication方法是不需要参数的，所以我们这里就直接传null进去即可
-                sApplication = (Application) method.invoke(null, null);
+                sApplication = (Application) method.invoke(null);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {

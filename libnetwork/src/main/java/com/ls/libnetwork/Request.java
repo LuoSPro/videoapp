@@ -1,12 +1,20 @@
 package com.ls.libnetwork;
 
+import android.annotation.SuppressLint;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.IntDef;
+import androidx.arch.core.executor.ArchTaskExecutor;
+
+import com.ls.libnetwork.cache.CacheManager;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -22,7 +30,7 @@ import okhttp3.Response;
  * @param <T> Response里面的实体类型
  * @param <R> Request的子类
  */
-public abstract class Request<T,R extends Request> {
+public abstract class Request<T,R extends Request> implements Cloneable {
 
     public String mUrl;
     //对headers参数的存储
@@ -41,7 +49,9 @@ public abstract class Request<T,R extends Request> {
     private String cacheKey;
     private Type mType;
     private Class mClaz;
+    private int mCacheStrategy;
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({CACHE_ONLY,CACHE_FIRST,NET_ONLY,NET_CACHE})
     public @interface CacheStrategy{
 
@@ -95,42 +105,74 @@ public abstract class Request<T,R extends Request> {
         return (R) this;
     }
 
+    public R cacheStrategy(@CacheStrategy int cacheStrategy){
+        mCacheStrategy = cacheStrategy;
+        return (R) this;
+    }
+
     /**
      * 真正执行网络请求的方法
      * 这里对execute方法重载，如果有参数，代表异步请求，如果没参数，代表同步
      */
+    @SuppressLint("RestrictedApi")
     public void execute(final JsonCallback<T> callback){
-        getCall().enqueue(new Callback() {
-            /**
-             * 请求失败
-             * @param call
-             * @param e
-             */
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                ApiResponse<T> response = new ApiResponse<>();
-                response.message = e.getMessage();
-                //回调失败的方法
-                callback.onError(response);
-            }
-
-            /**
-             * 请求成功
-             * @param call
-             * @param response
-             * @throws IOException
-             */
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                ApiResponse<T> apiResponse = parseResponse(response,callback);
-                //请求成功，但是还得在业务逻辑上面判断是否成功了
-                if (apiResponse.success){
-                    callback.onSuccess(apiResponse);
-                }else{
-                    callback.onError(apiResponse);
+        if (mCacheStrategy != NET_ONLY){//不为只查询网络时，才做缓存
+            ArchTaskExecutor.getIOThreadExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    //读取缓存
+                    ApiResponse<T> response = readCache();
+                    if (callback != null){
+                        callback.onCreateSuccess(response);
+                    }
                 }
-            }
-        });
+            });
+        }
+        if (mCacheStrategy != CACHE_ONLY){//不为CACHE_ONLY时，才访问网络
+            getCall().enqueue(new Callback() {
+                /**
+                 * 请求失败
+                 * @param call
+                 * @param e
+                 */
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    ApiResponse<T> response = new ApiResponse<>();
+                    response.message = e.getMessage();
+                    //回调失败的方法
+                    callback.onError(response);
+                }
+
+                /**
+                 * 请求成功
+                 * @param call
+                 * @param response
+                 * @throws IOException
+                 */
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    ApiResponse<T> apiResponse = parseResponse(response,callback);
+                    //请求成功，但是还得在业务逻辑上面判断是否成功了
+                    if (apiResponse.success){
+                        callback.onSuccess(apiResponse);
+                    }else{
+                        callback.onError(apiResponse);
+                    }
+                }
+            });
+        }
+    }
+
+    private ApiResponse<T> readCache() {
+        //处理key
+        String key = TextUtils.isEmpty(cacheKey) ? generateCacheKey() : cacheKey;
+        Object cache = CacheManager.getCache(key);
+        ApiResponse<T> result = new ApiResponse<>();
+        result.status = 304;
+        result.message = "缓存获取成功";
+        result.body = (T) cache;
+        result.success = true;
+        return result;
     }
 
     private ApiResponse<T> parseResponse(Response response, JsonCallback<T> callback) {
@@ -167,7 +209,24 @@ public abstract class Request<T,R extends Request> {
         result.success = success;
         result.status = status;
         result.message = message;
+
+        //当mCacheStrategy的模式不为只访问网络时才做缓存
+        if (mCacheStrategy != NET_ONLY&&result.success&&result.body!=null&&result.body instanceof Serializable){
+            saveCache(result.body);
+        }
+
         return result;
+    }
+
+    private void saveCache(T body) {
+        //检查用户传入的key是否为null，为null，我们就为其创建一个，不为null，我们就直接使用
+        String key = TextUtils.isEmpty(cacheKey)?generateCacheKey():cacheKey;
+        CacheManager.save(key,body);
+    }
+
+    private String generateCacheKey() {
+        cacheKey = UrlCreator.createUrlFromParams(mUrl,params);
+        return cacheKey;
     }
 
     private Call getCall() {
@@ -205,6 +264,11 @@ public abstract class Request<T,R extends Request> {
      * @return
      */
     public ApiResponse<T> execute(){
+        //同步请求里面：要么只能读缓存，要么只能网络数据
+        if (mCacheStrategy == CACHE_ONLY){
+            return readCache();
+        }
+        //Request类实现了Cloneable之后，我们修改mCacheStrategy，就可以实现先读取缓存，再请求网络数据了
         try {
             Response response = getCall().execute();
             ApiResponse<T> result = parseResponse(response, null);//同步请求的时候，没有JsonCallback，所以我们传null过去

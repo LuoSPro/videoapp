@@ -12,6 +12,12 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
+
+        javaCompileOptions{
+            annotationProcessorOptions{
+                arguments=["room.schemaLocation":"$projectDir/schemas".toString()]//这个模块的根目录下面的schemas文件夹
+            }
+        }
     }
 
     buildTypes {
@@ -45,4 +51,7 @@ dependencies {
     annotationProcessor 'android.arch.lifecycle:compiler:1.1.1'
     /*fastJson*/
     implementation 'com.alibaba:fastjson:1.2.59'
+    /*compileOnly：只在编译的时候有效， 不参与打包*/
+    compileOnly project(':libcommon')
+
 }
