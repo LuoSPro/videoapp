@@ -5,6 +5,9 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.ls.libnetwork.ApiResponse;
+import com.ls.libnetwork.GetRequest;
+import com.ls.libnetwork.JsonCallback;
 import com.ls.videoapp.utils.NavGraphBuilder;
 
 import androidx.annotation.NonNull;
@@ -14,6 +17,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -33,6 +38,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         //设置底部导航栏的监听事件
         navView.setOnNavigationItemSelectedListener(this);
+
+        GetRequest<JSONObject> request = new GetRequest<>("www.baidu.com");
+        //同步
+        request.execute();
+
+        //异步
+        request.execute(new JsonCallback<JSONObject>() {
+            @Override
+            public void onSuccess(ApiResponse<JSONObject> response) {
+                super.onSuccess(response);
+            }
+        });
     }
 
     @Override
