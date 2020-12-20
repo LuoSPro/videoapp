@@ -1,6 +1,7 @@
 package com.ls.videoapp;
 
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
@@ -39,8 +40,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //设置底部导航栏的监听事件
         navView.setOnNavigationItemSelectedListener(this);
 
-        GetRequest<JSONObject> request = new GetRequest<>("www.baidu.com");
+        GetRequest<JSONObject> request = new GetRequest<>("https://www.baidu.com/");
         //同步
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         request.execute();
 
         //异步

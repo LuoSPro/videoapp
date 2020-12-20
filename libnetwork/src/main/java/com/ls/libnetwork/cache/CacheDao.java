@@ -15,8 +15,8 @@ public interface CacheDao {
     long save(Cache cache);
 
 
-    @Query("select * from cache where `key` =: key")
-    Cache getCache(String key);
+    @Query("select * from cache where `key` = :mk")
+    Cache getCache(String mk);
 
     @Delete
     int delete(Cache cache);
