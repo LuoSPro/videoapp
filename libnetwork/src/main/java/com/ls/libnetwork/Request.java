@@ -26,7 +26,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 /**
- *
+ * Request类实现了Cloneable之后，我们修改mCacheStrategy，就可以实现先读取缓存，再请求网络数据了
  * @param <T> Response里面的实体类型
  * @param <R> Request的子类
  */
@@ -123,7 +123,7 @@ public abstract class Request<T,R extends Request> implements Cloneable {
                     //读取缓存
                     ApiResponse<T> response = readCache();
                     if (callback != null){
-                        callback.onCreateSuccess(response);
+                        callback.onCacheSuccess(response);
                     }
                 }
             });

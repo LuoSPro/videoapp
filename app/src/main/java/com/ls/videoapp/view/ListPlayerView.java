@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.ls.videoapp.R;
-import com.ls.videoapp.utils.PixUtils;
+import com.ls.libcommon.PixUtils;
 
 public class ListPlayerView extends FrameLayout {
 

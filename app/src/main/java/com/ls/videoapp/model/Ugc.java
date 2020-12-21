@@ -1,5 +1,7 @@
 package com.ls.videoapp.model;
 
+import androidx.annotation.Nullable;
+
 /**
  * 帖子的点赞、分享、评论数量
  */
@@ -22,7 +24,21 @@ public class Ugc {
         private boolean hasdiss;
         private boolean hasDissed;
 
-        public int getLikeCount() {
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null || !(obj instanceof Feed))
+            return false;
+        Ugc newUgc = (Ugc) obj;
+        return likeCount == newUgc.likeCount&&
+               shareCount == newUgc.shareCount&&
+               commentCount == newUgc.commentCount&&
+               hasFavorite == newUgc.hasFavorite&&
+               hasLiked == newUgc.hasLiked&&
+               hasdiss == newUgc.hasdiss;
+
+    }
+
+    public int getLikeCount() {
             return likeCount;
         }
 

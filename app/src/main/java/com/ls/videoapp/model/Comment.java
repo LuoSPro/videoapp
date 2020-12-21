@@ -1,5 +1,9 @@
 package com.ls.videoapp.model;
 
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 
 public class Comment implements Serializable {
@@ -39,6 +43,28 @@ public class Comment implements Serializable {
     private boolean hasLiked;
     private User author;
     private Ugc ugc;
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null || !(obj instanceof Feed))
+            return false;
+        Comment newComment = (Comment) obj;
+        return id == newComment.id &&
+                itemId == newComment.itemId &&
+                commentId == newComment.commentId &&
+                userId == newComment.userId &&
+                commentType == newComment.commentType &&
+                createTime == newComment.createTime &&
+                commentCount == newComment.commentCount &&
+                likeCount == newComment.likeCount &&
+                TextUtils.equals(commentText, newComment.commentText) &&
+                imageUrl == newComment.imageUrl &&
+                videoUrl == newComment.videoUrl &&
+                width == newComment.width &&
+                height == newComment.height &&
+                hasLiked == newComment.hasLiked &&
+                author == newComment.author;
+    }
 
     public int getId() {
         return id;

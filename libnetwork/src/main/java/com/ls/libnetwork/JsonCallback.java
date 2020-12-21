@@ -10,7 +10,7 @@ public abstract class JsonCallback<T> {
 
     }
 
-    public void onCreateSuccess(ApiResponse<T> response){
+    public void onCacheSuccess(ApiResponse<T> response){
 
     }
 

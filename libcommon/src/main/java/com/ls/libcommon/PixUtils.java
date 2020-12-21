@@ -1,4 +1,4 @@
-package com.ls.videoapp.utils;
+package com.ls.libcommon;
 
 import android.util.DisplayMetrics;
 

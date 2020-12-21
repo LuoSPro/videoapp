@@ -80,4 +80,19 @@ public class ApiService {
         }
         sConvert = convert;
     }
+
+    /**
+     * 暴露接口，方便外部直接使用GET请求
+     */
+    public static <T> GetRequest<T> get(String url){
+        return new GetRequest<>(sBaseUrl+url);
+    }
+
+    /**
+     * 暴露接口，方便外部直接使用POST请求
+     */
+    public static <T> PostRequest<T> post(String url){
+        return new PostRequest<>(sBaseUrl+url);
+    }
+
 }

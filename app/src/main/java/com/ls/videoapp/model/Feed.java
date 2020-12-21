@@ -1,11 +1,16 @@
 package com.ls.videoapp.model;
 
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
+
 /**
  * 帖子
  */
 public class Feed {
 
-
+    public static final int TYPE_IMAGE = 1;
+    public static final int TYPE_VIDEO = 2;
     /**
      * id : 428
      * itemId : 1578976510452
@@ -35,9 +40,36 @@ public class Feed {
     private int height;
     private String url;
     private String cover;
+
     private User author;
     private Comment topComment;
     private Ugc ugc;
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null || !(obj instanceof Feed))
+            return false;
+        Feed newFeed = (Feed) obj;
+
+        return id == newFeed.id &&
+                itemId == newFeed.itemId &&
+                itemType == newFeed.itemType &&
+                createTime == newFeed.createTime &&
+                duration == newFeed.duration &&
+                TextUtils.equals(feeds_text, newFeed.feeds_text) &&
+                authorId == newFeed.authorId &&
+                TextUtils.equals(activityIcon, newFeed.activityIcon) &&
+                TextUtils.equals(activityText, newFeed.activityText) &&
+                width == newFeed.width &&
+                height == newFeed.height &&
+                TextUtils.equals(url, newFeed.url) &&
+                TextUtils.equals(cover, newFeed.cover) &&
+                (author != null && author.equals(newFeed.author)) &&
+                (topComment != null && topComment.equals(newFeed.topComment)) &&
+                (ugc != null && ugc.equals(newFeed.ugc));
+
+
+    }
 
     public void setActivityIcon(String activityIcon) {
         this.activityIcon = activityIcon;

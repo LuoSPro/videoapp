@@ -1,5 +1,9 @@
 package com.ls.videoapp.model;
 
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -42,6 +46,27 @@ public class User implements Serializable {
     private int favoriteCount;
     private int feedCount;
     private boolean hasFollow;
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null || !(obj instanceof Feed))
+            return false;
+        User newUser = (User) obj;
+        return id == newUser.id &&
+                userId == newUser.userId &&
+                TextUtils.equals(name, newUser.name) &&
+                TextUtils.equals(avatar, newUser.avatar) &&
+                TextUtils.equals(description, newUser.description) &&
+                likeCount == newUser.likeCount &&
+                topCommentCount == newUser.topCommentCount &&
+                followCount == newUser.followCount &&
+                followerCount == newUser.followerCount &&
+                TextUtils.equals(qqOpenId, newUser.qqOpenId) &&
+                expires_time == newUser.expires_time &&
+                score == newUser.score &&
+                historyCount == newUser.historyCount &&
+                commentCount == newUser.commentCount;
+    }
 
     public int getId() {
         return id;
