@@ -40,22 +40,22 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //设置底部导航栏的监听事件
         navView.setOnNavigationItemSelectedListener(this);
 
-        GetRequest<JSONObject> request = new GetRequest<>("https://www.baidu.com/");
+//        GetRequest<JSONObject> request = new GetRequest<>("https://www.baidu.com/");
         //同步
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        request.execute();
-
-        //异步
-        request.execute(new JsonCallback<JSONObject>() {
-            @Override
-            public void onSuccess(ApiResponse<JSONObject> response) {
-                super.onSuccess(response);
-            }
-        });
+//        request.execute();
+//
+//        //异步
+//        request.execute(new JsonCallback<JSONObject>() {
+//            @Override
+//            public void onSuccess(ApiResponse<JSONObject> response) {
+//                super.onSuccess(response);
+//            }
+//        });
     }
 
     @Override

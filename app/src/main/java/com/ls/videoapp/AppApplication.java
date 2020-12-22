@@ -10,6 +10,6 @@ public class AppApplication extends Application {
     public void onCreate() {
         super.onCreate();
         //初始化网络请求module，否则后面会报空指针
-        ApiService.init("http://localhost:8888/serverdemo",null);
+        ApiService.init("http://10.0.2.2:8888/serverdemo",null);
     }
 }

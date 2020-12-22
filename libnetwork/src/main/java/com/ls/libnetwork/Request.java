@@ -5,12 +5,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 import androidx.arch.core.executor.ArchTaskExecutor;
 
 import com.ls.libnetwork.cache.CacheManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
@@ -31,6 +33,12 @@ import okhttp3.Response;
  * @param <R> Request的子类
  */
 public abstract class Request<T,R extends Request> implements Cloneable {
+
+    @NonNull
+    @Override
+    public Request clone() throws CloneNotSupportedException {
+        return (Request<T, R>) super.clone();
+    }
 
     public String mUrl;
     //对headers参数的存储
@@ -66,6 +74,9 @@ public abstract class Request<T,R extends Request> implements Cloneable {
     }
 
     public R addParam(String key,Object value){
+        if (value == null) {
+            return (R) this;
+        }
         //类里面的TYPE字段，类型：Class<Integer>,我们可以去找到类中的TYPE字段，然后通过TYPE字段来比较他是不是8
         //种基本数据类型的一个，就能实现我们对value类型的判断
         try {

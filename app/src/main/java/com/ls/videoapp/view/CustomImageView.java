@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -80,7 +82,6 @@ public class CustomImageView extends AppCompatImageView {
             });
             return;
         }
-
         setSize(widthPx,heightPx,marginLeft,maxWidth,maxHeight);
         setImageUrl(this,imageUrl,false);
     }
@@ -94,10 +95,19 @@ public class CustomImageView extends AppCompatImageView {
             finalHeight = maxHeight;
             finalWidth = (int) (width / (height * 1.0f / finalHeight));//宽度按比例缩小
         }
-        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(finalWidth, finalHeight);
-        params.leftMargin = height > width ? PixUtils.dp2px(marginLeft) : 0;//当高度大于宽度的时候，设置旁边的margin，当宽度大于高度的时候，占满屏幕宽度
+        ViewGroup.LayoutParams params = getLayoutParams();
+        params.width = finalWidth;
+        params.height = finalHeight;
+        //这里要做强制类型转换，因为当params为FrameLayout.LayoutParams的子类实例时，将其强制转换为LinearLayout.LayoutParams
+        //会报错：android.view.ViewGroup$MarginLayoutParams cannot be cast to android.widget.LinearLayout$LayoutParams
+        if (params instanceof FrameLayout.LayoutParams) {
+            ((FrameLayout.LayoutParams) params).leftMargin = height > width ? PixUtils.dp2px(marginLeft) : 0;
+        } else if (params instanceof LinearLayout.LayoutParams) {
+            ((LinearLayout.LayoutParams) params).leftMargin = height > width ? PixUtils.dp2px(marginLeft) : 0;
+        }
+//        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(finalWidth, finalHeight);
+//        params.leftMargin = height > width ? PixUtils.dp2px(marginLeft) : 0;//当高度大于宽度的时候，设置旁边的margin，当宽度大于高度的时候，占满屏幕宽度
         setLayoutParams(params);
-
     }
 
     public void setBlurImageUrl(String coverUrl, int radius) {

@@ -21,22 +21,17 @@ import com.ls.videoapp.ui.AbsListFragment;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
 @FragmentDestination(pagerUrl = "main/tabs/home",asStarter = true)
-public class HomeFragment extends AbsListFragment<Feed> {
+public class HomeFragment extends AbsListFragment<Feed,HomeViewModel> {
 
-    private HomeViewModel homeViewModel;
+    @Override
+    protected void afterCreateView() {
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        return root;
     }
 
     @Override
-    public PagedListAdapter<Feed, RecyclerView.ViewHolder> getAdapter() {
-        return null;
+    public PagedListAdapter getAdapter() {
+        String feedType = getArguments()==null?"all":getArguments().getString("feedType");
+        return new FeedAdapter(getContext(),feedType);
     }
 
     @Override

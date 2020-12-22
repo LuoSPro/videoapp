@@ -7,26 +7,38 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
 import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ls.libcommon.EmptyView;
+import com.ls.videoapp.AbsViewModel;
+import com.ls.videoapp.R;
 import com.ls.videoapp.databinding.LayoutRefreshViewBinding;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.constant.RefreshState;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-public abstract class AbsListFragment<T> extends Fragment implements OnRefreshListener, OnLoadMoreListener {
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
-    private LayoutRefreshViewBinding binding;
-    private SmartRefreshLayout mRefreshLayout;
-    private RecyclerView mRecyclerView;
-    private EmptyView mEmptyView;
-    private PagedListAdapter<T, RecyclerView.ViewHolder> mAdapter;
+public abstract class AbsListFragment<T,M extends AbsViewModel<T>> extends Fragment implements OnRefreshListener, OnLoadMoreListener {
+
+    protected LayoutRefreshViewBinding binding;
+    protected SmartRefreshLayout mRefreshLayout;
+    protected RecyclerView mRecyclerView;
+    protected EmptyView mEmptyView;
+    protected PagedListAdapter<T, RecyclerView.ViewHolder> mAdapter;
+    protected M mViewModel;
 
     @Nullable
     @Override
@@ -47,7 +59,46 @@ public abstract class AbsListFragment<T> extends Fragment implements OnRefreshLi
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setItemAnimator(null);
+        //设置RecyclerView的分割
+        DividerItemDecoration decoration = new DividerItemDecoration(getContext(),LinearLayoutManager.VERTICAL);
+        decoration.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.list_divider));
+        mRecyclerView.addItemDecoration(decoration);
+
+        afterCreateView();
+
         return binding.getRoot();
+    }
+
+    protected abstract void afterCreateView();
+
+    /**
+     * 获取传递进来的 M  泛型
+     * @param view
+     * @param savedInstanceState
+     */
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
+        Type[] arguments = type.getActualTypeArguments();
+        if (arguments.length > 1){
+            Type argument = arguments[1];
+            Class modelClaz = ((Class) argument).asSubclass(AbsViewModel.class);
+            //这里的ViewModel就是外界传进来的 M 泛型
+            mViewModel = (M) ViewModelProviders.of(this).get(modelClaz);
+            mViewModel.getPageData().observe(getViewLifecycleOwner(), new Observer<PagedList<T>>() {
+                @Override
+                public void onChanged(PagedList<T> pagedList) {
+                    mAdapter.submitList(pagedList);
+                }
+            });
+            mViewModel.getBooleanMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean hasData) {//监听页面是否有数据
+                    finishRefresh(hasData);
+                }
+            });
+        }
     }
 
     /**

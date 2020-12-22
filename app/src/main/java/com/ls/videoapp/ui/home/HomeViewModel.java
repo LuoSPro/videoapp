@@ -1,5 +1,7 @@
 package com.ls.videoapp.ui.home;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -23,6 +25,8 @@ import java.util.List;
 
 public class HomeViewModel extends AbsViewModel<Feed> {
 
+    private static final String TAG = "HomeViewModel";
+
     private volatile boolean witchCache = true;
 
     /**
@@ -35,8 +39,7 @@ public class HomeViewModel extends AbsViewModel<Feed> {
      */
     @Override
     public DataSource createDataSource() {
-
-        return null;
+        return mDataSource;
     }
 
     ItemKeyedDataSource<Integer,Feed> mDataSource = new ItemKeyedDataSource<Integer, Feed>() {
@@ -83,14 +86,31 @@ public class HomeViewModel extends AbsViewModel<Feed> {
             request.execute(new JsonCallback<List<Feed>>() {
                 @Override
                 public void onCacheSuccess(ApiResponse<List<Feed>> response) {
-
+                    if (response.body != null){
+                        Log.d(TAG, "onCacheSuccess: " + response.body.size());
+                    }else{
+                        Log.d(TAG, "onCacheSuccess: response body is null");
+                    }
                 }
             });
         }
 
         //网络数据的请求
         try {
-            Request netRequest = witchCache?request.clone():request;
+            //判断是从缓存拿数据，还是直接去请求网络
+            Request netRequest = witchCache? request.clone() :request;
+            //更改cacheStrategy的值，就可以实现，先读取缓存，载请求数据了
+            netRequest.cacheStrategy(key == 0?Request.NET_CACHE:Request.NET_ONLY);
+            //请求后的返回结果
+            ApiResponse<List<Feed>> response = netRequest.execute();
+            //判断返回的数据是否为null
+            List<Feed> data = response.body == null ? Collections.emptyList() : response.body;
+            //通知请求的结果到了，回调onResult
+            callback.onResult(data);
+            if (key>0){//key>0:上拉加载
+                //通过liveData发送数据，告诉UI层 是否应该主动关闭上拉加载分页的动画
+                getBooleanMutableLiveData().postValue(data.size()>0);
+            }
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
