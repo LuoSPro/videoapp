@@ -1,15 +1,14 @@
 package com.ls.videoapp.ui.home;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
+import androidx.arch.core.executor.ArchTaskExecutor;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.paging.DataSource;
 import androidx.paging.ItemKeyedDataSource;
-import androidx.paging.PageKeyedDataSource;
-import androidx.paging.PositionalDataSource;
+import androidx.paging.PagedList;
 
 import com.alibaba.fastjson.TypeReference;
 import com.ls.libnetwork.ApiResponse;
@@ -18,16 +17,24 @@ import com.ls.libnetwork.JsonCallback;
 import com.ls.libnetwork.Request;
 import com.ls.videoapp.AbsViewModel;
 import com.ls.videoapp.model.Feed;
+import com.ls.videoapp.ui.MutableDataSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HomeViewModel extends AbsViewModel<Feed> {
 
     private static final String TAG = "HomeViewModel";
 
     private volatile boolean witchCache = true;
+
+    //这里使用MutableLiveData，就是因为MutableLiveData里面将PostValue和setValue方法设置成了public，便于发送
+    private MutableLiveData<PagedList<Feed>> cacheLiveData = new MutableLiveData<>();
+
+    //设置同步标志位
+    private AtomicBoolean loadAfterFlag = new AtomicBoolean(false);
 
     /**
      * DataSource<Key,Value>数据源：  key对应加载数据的条件信息，value对应数据实体类
@@ -39,14 +46,20 @@ public class HomeViewModel extends AbsViewModel<Feed> {
      */
     @Override
     public DataSource createDataSource() {
-        return mDataSource;
+        //这里每次都要创建创建DataSource，不然DataSource里面的mInvalid这个标志位不会被更新，一直为true，这样，就不会去加载数据了，
+        //而新建一个对象之后，mInvalid被初始化为false，这样就能重新加载数据了
+        return new FeedDataSource();
     }
 
-    ItemKeyedDataSource<Integer,Feed> mDataSource = new ItemKeyedDataSource<Integer, Feed>() {
+    public MutableLiveData<PagedList<Feed>> getCacheLiveData() {
+        return cacheLiveData;
+    }
+
+    class FeedDataSource extends ItemKeyedDataSource<Integer, Feed> {
         @Override
         public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Feed> callback) {
             //加载初始化数据的
-            //首页的加载：先在家缓存，然后再加载网络数据，网络数据成功之后，再更新本地缓存
+            //首页的加载：先加载缓存，然后再加载网络数据，网络数据成功之后，再更新本地缓存
             loadData(0,callback);
             witchCache = false;
         }
@@ -72,6 +85,9 @@ public class HomeViewModel extends AbsViewModel<Feed> {
     };
 
     private void loadData(int key, ItemKeyedDataSource.LoadCallback<Feed> callback) {
+        if (key > 0){//如果传入的key是大于0的，代表此次加载是分页的，我们就要设置同步位为true
+            loadAfterFlag.set(true);
+        }
         //由于PageList在调用loadInitial、loadAfter、loadBefore方法的时候，已经开了子线程了，所以我们在这里就没必要再开子线程了，所以这里直接使用同步请求
         Request request = ApiService.get("/feeds/queryHotFeedsList")
                 .addParam("feedType", null)
@@ -88,6 +104,14 @@ public class HomeViewModel extends AbsViewModel<Feed> {
                 public void onCacheSuccess(ApiResponse<List<Feed>> response) {
                     if (response.body != null){
                         Log.d(TAG, "onCacheSuccess: " + response.body.size());
+                        //我们要将请求到的数据通过adapter.subList()设置到Adapter里面去，但是subList接收的是PagedList对象，所以我们需要将body进行转化
+                        List<Feed> body = response.body;
+                        //将body和PagedList进行封装
+                        MutableDataSource dataSource = new MutableDataSource<Integer,Feed>();
+                        dataSource.data.addAll(body);
+                        PagedList pagedList = dataSource.buildNewPagedList(mConfig);//mConfig传进去构造PagedList对象
+                        //因为是在子线程里面，所以这里只能使用PostValue()方法
+                        cacheLiveData.postValue(pagedList);
                     }else{
                         Log.d(TAG, "onCacheSuccess: response body is null");
                     }
@@ -110,9 +134,29 @@ public class HomeViewModel extends AbsViewModel<Feed> {
             if (key>0){//key>0:上拉加载
                 //通过liveData发送数据，告诉UI层 是否应该主动关闭上拉加载分页的动画
                 getBooleanMutableLiveData().postValue(data.size()>0);
+                //如果加载完之后，发现key>0，就说明还能加载分页数据，我们设置同步位为false
+                loadAfterFlag.set(false);
             }
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
+
+        Log.e(TAG, "loadData: key --> " + key);
+    }
+
+    @SuppressLint("RestrictedApi")
+    public void loadAfter(int id, ItemKeyedDataSource.LoadCallback<Feed> callback) {
+        if (loadAfterFlag.get()){//判断同步位
+            callback.onResult(Collections.emptyList());
+            return;
+        }
+        //这样就能手动触发分页数据的加载了。但是需要设置一个同步位，因为Paging可能会帮我们处理，我们在上拉的时候又手动触发了记载分页
+        ArchTaskExecutor.getIOThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                loadData(id,callback);
+            }
+        });
+
     }
 }
