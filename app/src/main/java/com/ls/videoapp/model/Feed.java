@@ -3,11 +3,15 @@ package com.ls.videoapp.model;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+
+import java.io.Serializable;
 
 /**
  * 帖子
  */
-public class Feed {
+public class Feed extends BaseObservable implements Serializable {
 
     public static final int TYPE_IMAGE = 1;
     public static final int TYPE_VIDEO = 2;
@@ -91,7 +95,11 @@ public class Feed {
         this.topComment = topComment;
     }
 
+    @Bindable
     public Ugc getUgc() {
+        if (ugc == null){
+            ugc = new Ugc();
+        }
         return ugc;
     }
 

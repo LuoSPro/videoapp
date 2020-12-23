@@ -68,4 +68,6 @@ dependencies {
     api 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     /*paging分页组件*/
     api 'androidx.paging:paging-runtime:2.1.2'
+    /*QQ快捷登录*/
+    implementation files('libs/open_sdk_3.5.1.157_re503bfe_lite.jar')
 }

@@ -7,8 +7,13 @@
         <variable
             name="feed"
             type="Feed" />
+        
+        <variable
+            name="lifeCycleOwner"
+            type="androidx.lifecycle.LifecycleOwner" />
         <import type="com.ls.videoapp.model.Feed"/>
         <import type="com.ls.videoapp.utils.StringConvert"/>
+        <import type="com.ls.videoapp.ui.home.InteractionPresenter"/>
     </data>
 
     <LinearLayout
@@ -22,20 +27,22 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:onClick="@{()->InteractionPresenter.toggleFeedLicked(lifeCycleOwner,feed)}"
             android:backgroundTint="@color/color_white"
             android:textSize="@dimen/sp_14"
             android:textColor="@{feed.ugc.hasLiked?@color/color_theme:@color/color_3d3}"
-            tools:text="1000"
             android:text="@{feed.ugc.likeCount>0?StringConvert.convertFeedUgc(feed.ugc.likeCount):null}"
+            tools:text="1000"
+            tools:icon="@drawable/icon_cell_liked"
             app:iconPadding="4dp"
             app:iconGravity="textStart"
-            tools:icon="@drawable/icon_cell_liked"
             app:icon="@{feed.ugc.hasLiked?@drawable/icon_cell_liked:@drawable/icon_cell_like}"/>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:onClick="@{()->InteractionPresenter.toggleFeedDiss(lifeCycleOwner,feed)}"
             android:backgroundTint="@color/color_white"
             android:textSize="@dimen/sp_14"
             android:textColor="@{feed.ugc.hasdiss?@color/color_theme:@color/color_3d3}"

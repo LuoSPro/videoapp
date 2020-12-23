@@ -14,7 +14,7 @@ import com.ls.videoapp.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-@FragmentDestination(pagerUrl = "main/tabs/my",asStarter = true)
+@FragmentDestination(pagerUrl = "main/tabs/my",asStarter = true,needLogin = true)
 public class MyFragment extends Fragment {
 
     public MyFragment() {

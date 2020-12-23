@@ -1,4 +1,4 @@
-package com.ls.videoapp;
+package com.ls.videoapp.navigator;
 
 import android.content.Context;
 import android.os.Bundle;

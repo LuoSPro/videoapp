@@ -15,9 +15,10 @@ import com.ls.libnetwork.ApiResponse;
 import com.ls.libnetwork.ApiService;
 import com.ls.libnetwork.JsonCallback;
 import com.ls.libnetwork.Request;
-import com.ls.videoapp.AbsViewModel;
+import com.ls.videoapp.ui.AbsViewModel;
 import com.ls.videoapp.model.Feed;
 import com.ls.videoapp.ui.MutableDataSource;
+import com.ls.videoapp.ui.login.UserManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,7 +92,7 @@ public class HomeViewModel extends AbsViewModel<Feed> {
         //由于PageList在调用loadInitial、loadAfter、loadBefore方法的时候，已经开了子线程了，所以我们在这里就没必要再开子线程了，所以这里直接使用同步请求
         Request request = ApiService.get("/feeds/queryHotFeedsList")
                 .addParam("feedType", null)
-                .addParam("userId", 0)//用户id
+                .addParam("userId", UserManager.get().getUserId())//用户id
                 .addParam("feedId", key)
                 .addParam("pageCount", 10)//分页加载多少条
                 .responseType(new TypeReference<ArrayList<Feed>>() {

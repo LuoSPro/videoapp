@@ -1,11 +1,16 @@
 package com.ls.videoapp.model;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
+
+import java.io.Serializable;
 
 /**
  * 帖子的点赞、分享、评论数量
  */
-public class Ugc {
+public class Ugc extends BaseObservable implements Serializable {
         /**
          * likeCount : 102
          * shareCount : 10
@@ -70,19 +75,42 @@ public class Ugc {
             this.hasFavorite = hasFavorite;
         }
 
+        @Bindable
         public boolean isHasLiked() {
             return hasLiked;
         }
 
         public void setHasLiked(boolean hasLiked) {
+            if (this.hasLiked == hasLiked)
+                return;
+            if (this.hasLiked){
+                likeCount = likeCount + 1;
+                //取消 踩  的效果
+                setHasdiss(false);
+            }else{
+                likeCount = likeCount - 1;
+            }
             this.hasLiked = hasLiked;
+            //告诉外面，这里有数据改变了，应该重新绑定数据
+            notifyPropertyChanged(BR._all);
         }
 
+        @Bindable
         public boolean isHasdiss() {
             return hasdiss;
         }
 
+        /**
+         * 点赞和踩是互斥的
+         * @param hasdiss
+         */
         public void setHasdiss(boolean hasdiss) {
+            if (this.hasdiss == hasdiss)
+                return;
+            if (hasdiss){
+                //取消  赞  的效果
+                setHasLiked(false);
+            }
             this.hasdiss = hasdiss;
         }
 

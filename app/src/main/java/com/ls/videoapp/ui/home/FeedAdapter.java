@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -79,12 +80,15 @@ public class FeedAdapter extends PagedListAdapter<Feed,FeedAdapter.ViewHolder> {
                 //往布局里面设置数据
                 imageBinding.setFeed(item);
                 imageBinding.feedImage.bindData(item.getWidth(),item.getHeight(),16,item.getCover());
+                //给布局里面设置数据进去，因为布局里面需要这些参数
+                imageBinding.setLifecycleOwner((LifecycleOwner)mContext);
             }else{
                 //视频
                 LayoutFeedTypeVideoBinding videoBinding = (LayoutFeedTypeVideoBinding) mBinding;
                 //往布局里面设置数据
                 videoBinding.setFeed(item);
                 videoBinding.listPlayerView.bindData(mCategory,item.getWidth(),item.getHeight(),item.getUrl(),item.getCover());
+                videoBinding.setLifecycleOwner((LifecycleOwner)mContext);
             }
         }
     }

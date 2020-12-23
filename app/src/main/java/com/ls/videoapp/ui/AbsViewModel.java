@@ -1,4 +1,4 @@
-package com.ls.videoapp;
+package com.ls.videoapp.ui;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;

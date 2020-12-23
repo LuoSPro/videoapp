@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
 import androidx.paging.PagedListAdapter;
@@ -20,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ls.libcommon.EmptyView;
-import com.ls.videoapp.AbsViewModel;
 import com.ls.videoapp.R;
 import com.ls.videoapp.databinding.LayoutRefreshViewBinding;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
