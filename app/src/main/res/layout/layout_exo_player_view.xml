@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.exoplayer2.ui.PlayerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    app:use_controller="false"
+    app:show_timeout="1000"
+    app:keep_content_on_player_reset="false"
+    app:surface_type="texture_view"
+    app:resize_mode="zoom"
+    app:show_buffering="never"
+    app:player_layout_id="@layout/layout_simple_exo_player_view"
+    android:orientation="vertical">
+
+    <!--keepScreenOn:是否保持屏幕的常量-->
+    <!--use_controller:是否启用系统自带的视频播放控制器-->
+    <!--show_timeout:播放控制器多久之后开始隐藏掉-->
+    <!--keep_content_on_player_reset：重置的时候（我们上下滑动的时候），需不需要保留最后一帧-->
+    <!--surface_type:指定我们视频能显示的view的类型-->
+    <!--resize_mode:视频画面帧的播放形式-->
+    <!--show_buffering:视频加载的时候，展示的加载框-->
+
+</com.google.android.exoplayer2.ui.PlayerView>

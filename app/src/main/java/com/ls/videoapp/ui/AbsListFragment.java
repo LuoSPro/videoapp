@@ -61,42 +61,30 @@ public abstract class AbsListFragment<T,M extends AbsViewModel<T>> extends Fragm
         decoration.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.list_divider));
         mRecyclerView.addItemDecoration(decoration);
 
-
-
+        genericViewModel();
         return binding.getRoot();
     }
 
-    protected abstract void afterCreateView();
-
-    /**
-     * 获取传递进来的 M  泛型
-     * @param view
-     * @param savedInstanceState
-     */
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    private void genericViewModel() {
+        //利用 子类传递的 泛型参数实例化出absViewModel 对象。
         ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
         Type[] arguments = type.getActualTypeArguments();
-        if (arguments.length > 1){
+        if (arguments.length > 1) {
             Type argument = arguments[1];
             Class modelClaz = ((Class) argument).asSubclass(AbsViewModel.class);
-            //这里的ViewModel就是外界传进来的 M 泛型
             mViewModel = (M) ViewModelProviders.of(this).get(modelClaz);
-            mViewModel.getPageData().observe(getViewLifecycleOwner(), new Observer<PagedList<T>>() {
-                @Override
-                public void onChanged(PagedList<T> pagedList) {
-                    mAdapter.submitList(pagedList);
-                }
-            });
+
+            //触发页面初始化数据加载的逻辑
+            mViewModel.getPageData().observe(getViewLifecycleOwner(), pagedList -> submitList(pagedList));
+
+            //监听分页时有无更多数据,以决定是否关闭上拉加载的动画
             mViewModel.getBooleanMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                 @Override
                 public void onChanged(Boolean hasData) {//监听页面是否有数据
                     finishRefresh(hasData);
                 }
             });
-
-            afterCreateView();
+//            mViewModel.getBoundaryPageData().observe(this, hasData -> finishRefresh(hasData));
         }
     }
 

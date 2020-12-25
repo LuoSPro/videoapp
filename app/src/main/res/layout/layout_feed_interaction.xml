@@ -13,7 +13,7 @@
             type="androidx.lifecycle.LifecycleOwner" />
         <import type="com.ls.videoapp.model.Feed"/>
         <import type="com.ls.videoapp.utils.StringConvert"/>
-        <import type="com.ls.videoapp.ui.home.InteractionPresenter"/>
+        <import type="com.ls.videoapp.ui.InteractionPresenter"/>
     </data>
 
     <LinearLayout

@@ -1,4 +1,4 @@
-package com.ls.videoapp.ui.home;
+package com.ls.videoapp.ui;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
