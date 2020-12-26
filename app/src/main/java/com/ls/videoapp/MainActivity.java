@@ -17,6 +17,7 @@ import com.ls.videoapp.utils.NavGraphBuilder;
 import com.ls.videoapp.utils.StatusBar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -36,8 +37,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private NavController mNavController;
     private BottomNavigationView mNavView;
 
+    @RequiresApi(api = 30)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //把Activity的theme设置会appTheme的，不然我们的界面就会一直有我们的启动背景
+        setTheme(R.style.AppTheme);
         StatusBar.fitSystemBar(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

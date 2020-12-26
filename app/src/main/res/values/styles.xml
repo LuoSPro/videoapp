@@ -9,6 +9,13 @@
         <item name="materialButtonStyle">@style/materialButton</item>
     </style>
 
+    <!--解决页面启动白屏问题：因为我们点开app的时候(冷启动)，系统会fork出一个新的进程，然后等待初始的Activity加载完之后(onResume()之后)，再显示页面-->
+    <!--在onResume()之前，白屏的出现，其实是由于我们app的主题AppTheme里面的WindowBackground，即白色的-->
+    <!--所以只需要给我们的入口类Activity配置一个特殊的主题就可以了-->
+    <style name="launcher" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
     <style name="materialButton" parent="Widget.MaterialComponents.Button">
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
