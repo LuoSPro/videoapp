@@ -13,15 +13,18 @@
         <import type="com.ls.videoapp.utils.StringConvert"/>
     </data>
 
-    <FrameLayout
+    <com.ls.libcommon.CornerFrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:background="@color/color_gray2"
+        android:background="@color/color_gray"
         android:paddingStart="@dimen/dp_10"
         android:paddingEnd="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10">
+        android:paddingBottom="@dimen/dp_10"
+        android:visibility="@{comment==null?View.GONE:View.VISIBLE}"
+        app:clip_radius="6dp"
+        app:clip_side="all">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -124,5 +127,5 @@
 
         </LinearLayout>
 
-    </FrameLayout>
+    </com.ls.libcommon.CornerFrameLayout>
 </layout>

@@ -9,6 +9,7 @@
             type="com.ls.videoapp.model.Feed" />
 
         <import type="com.ls.videoapp.model.Feed"/>
+        <import type="android.view.View"/>
     </data>
 
     <LinearLayout

@@ -14,6 +14,7 @@ import com.ls.videoapp.model.User;
 import com.ls.videoapp.ui.login.UserManager;
 import com.ls.videoapp.utils.AppConfig;
 import com.ls.videoapp.utils.NavGraphBuilder;
+import com.ls.videoapp.utils.StatusBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StatusBar.fitSystemBar(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mNavView = findViewById(R.id.nav_view);
@@ -57,15 +59,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-//        request.execute();
-//
-//        //异步
-//        request.execute(new JsonCallback<JSONObject>() {
-//            @Override
-//            public void onSuccess(ApiResponse<JSONObject> response) {
-//                super.onSuccess(response);
-//            }
-//        });
     }
 
     @Override

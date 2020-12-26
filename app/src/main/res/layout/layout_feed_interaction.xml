@@ -34,8 +34,11 @@
             android:text="@{feed.ugc.likeCount>0?StringConvert.convertFeedUgc(feed.ugc.likeCount):null}"
             tools:text="1000"
             tools:icon="@drawable/icon_cell_liked"
+            tools:iconTint="@color/color_3d3"
+            app:cornerRadius="0dp"
             app:iconPadding="4dp"
             app:iconGravity="textStart"
+            app:iconTint="@{feed.ugc.hasLiked?@color/color_theme:@color/color_3d3}"
             app:icon="@{feed.ugc.hasLiked?@drawable/icon_cell_liked:@drawable/icon_cell_like}"/>
 
         <com.google.android.material.button.MaterialButton
@@ -47,9 +50,11 @@
             android:textSize="@dimen/sp_14"
             android:textColor="@{feed.ugc.hasdiss?@color/color_theme:@color/color_3d3}"
             android:text="踩"
+            tools:icon="@drawable/icon_cell_dissed"
+            tools:iconTint="@color/color_3d3"
             app:iconPadding="4dp"
             app:iconGravity="textStart"
-            tools:icon="@drawable/icon_cell_dissed"
+            app:iconTint="@{feed.ugc.hasdiss?@color/color_theme:@color/color_3d3}"
             app:icon="@{feed.ugc.hasLiked?@drawable/icon_cell_dissed:@drawable/icon_cell_diss}"/>
 
         <com.google.android.material.button.MaterialButton
@@ -61,9 +66,11 @@
             android:textColor="@{feed.ugc.hasLiked?@color/color_theme:@color/color_3d3}"
             tools:text="1000"
             android:text="@{feed.ugc.commentCount>0?StringConvert.convertFeedUgc(feed.ugc.commentCount):null}"
+            tools:icon="@drawable/icon_cell_comment"
+            tools:iconTint="@color/color_3d3"
             app:iconPadding="4dp"
             app:iconGravity="textStart"
-            tools:icon="@drawable/icon_cell_comment"
+            app:iconTint="@color/color_3d3"
             app:icon="@drawable/icon_cell_comment"/>
 
         <com.google.android.material.button.MaterialButton
@@ -73,11 +80,13 @@
             android:backgroundTint="@color/color_white"
             android:textSize="@dimen/sp_14"
             android:textColor="@{feed.ugc.hasLiked?@color/color_theme:@color/color_3d3}"
-            tools:text="1000"
             android:text="@{feed.ugc.shareCount>0?StringConvert.convertFeedUgc(feed.ugc.shareCount):null}"
+            tools:text="1000"
+            tools:icon="@drawable/icon_cell_share"
+            tools:iconTint="@color/color_3d3"
             app:iconPadding="4dp"
             app:iconGravity="textStart"
-            tools:icon="@drawable/icon_cell_share"
+            app:iconTint="@color/color_3d3"
             app:icon="@drawable/icon_cell_share"/>
 
     </LinearLayout>
