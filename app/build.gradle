@@ -49,6 +49,7 @@ dependencies {
     implementation project(":libnavannotation")
     annotationProcessor project(":libnavcompiler")
 
+    implementation 'androidx.core:core:1.5.0-alpha05'
     /*解析json*/
     implementation 'com.alibaba:fastjson:1.2.59'
     /*okhttp请求框架 model的封装*/

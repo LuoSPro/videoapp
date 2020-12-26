@@ -3,13 +3,18 @@ package com.ls.videoapp.utils;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.CancellationSignal;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import androidx.annotation.RequiresApi;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 public class StatusBar {
 
+    @RequiresApi(api = 30)
     public static void fitSystemBar(Activity activity){
         if (Build.VERSION.SDK_INT<Build.VERSION_CODES.M){
             //Android6.0之后的版本才设置沉浸式布局
@@ -23,9 +28,19 @@ public class StatusBar {
         //View.SYSTEM_UI_FLAG_LAYOUT_STABLE:用户手机上的虚拟按钮，当我们显示或隐藏的时候，它会触发我们页面的重新布局，但是使用这个之后，无论虚拟按钮的状态是怎样，都能保证我们
         //布局在状态栏之下
         //View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR:轻亮的状态栏，我们不设置的话，状态栏就是主题色为底色，白色字体。如果设置了之后，状态栏会变成白底黑字
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
-        //运行window对状态栏进行绘制
+
+        WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(decorView);
+        if (windowInsetsController != null){
+            //隐藏状态栏：
+            windowInsetsController.hide(WindowInsetsCompat.Type.statusBars());
+            //状态栏文字颜色改为黑色
+            windowInsetsController.setAppearanceLightStatusBars(true);
+        }else{
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
+        //运行window对状态栏进行绘制,不设置的话，状态栏的底部颜色就是主题色
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         //指定状态栏为透明色，不然window会绘制成灰色
         window.setStatusBarColor(Color.TRANSPARENT);
