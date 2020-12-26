@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.sofa.SofaFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical"
+        tools:context=".ui.sofa.SofaFragment">
 
-</FrameLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_45"
+            app:tabMode="scrollable"
+            app:tabGravity="start"
+            app:tabSelectedTextColor="@color/color_theme"
+            app:tabTextColor="@color/color_333"
+            app:tabIndicatorColor="@color/color_theme"
+            app:tabIndicatorHeight="@dimen/dp_2"
+            app:tabIndicatorFullWidth="false"
+            app:tabUnboundedRipple="true" />
+        <!--tabUnboundedRipple:无边界的水波纹效果-->
+
+
+        <!--viewPage2使用recyclerView实现的-->
+        <!--orientation:翻页的方向-->
+        <!--ViewPager2相对于viewPage，增加了是否设置预加载的功能，让使用者自己选择是否预加载-->
+        <!--使用ViewPage的时候，如果我们设置高度为wrap_content，它会自动帮我们改成match_parent，2就解决了这个问题-->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" />
+
+    </LinearLayout>
+</layout>

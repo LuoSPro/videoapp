@@ -37,6 +37,13 @@ public class HomeViewModel extends AbsViewModel<Feed> {
     //设置同步标志位
     private AtomicBoolean loadAfterFlag = new AtomicBoolean(false);
 
+    private String mFeedType;
+
+    public void setFeedType(String feedType) {
+
+        mFeedType = feedType;
+    }
+
     /**
      * DataSource<Key,Value>数据源：  key对应加载数据的条件信息，value对应数据实体类
      *
@@ -91,7 +98,7 @@ public class HomeViewModel extends AbsViewModel<Feed> {
         }
         //由于PageList在调用loadInitial、loadAfter、loadBefore方法的时候，已经开了子线程了，所以我们在这里就没必要再开子线程了，所以这里直接使用同步请求
         Request request = ApiService.get("/feeds/queryHotFeedsList")
-                .addParam("feedType", null)
+                .addParam("feedType", mFeedType)
                 .addParam("userId", UserManager.get().getUserId())//用户id
                 .addParam("feedId", key)
                 .addParam("pageCount", 10)//分页加载多少条

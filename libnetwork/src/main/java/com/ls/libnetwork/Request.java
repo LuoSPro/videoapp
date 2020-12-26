@@ -78,12 +78,16 @@ public abstract class Request<T,R extends Request> implements Cloneable {
             return (R) this;
         }
         //类里面的TYPE字段，类型：Class<Integer>,我们可以去找到类中的TYPE字段，然后通过TYPE字段来比较他是不是8
-        //种基本数据类型的一个，就能实现我们对value类型的判断
+        //种基本数据类型的一个，就能实现我们对value类型的判断。但是除了 String.class 所以要额外判断
         try {
-            Field filed = value.getClass().getField("TYPE");
-            Class claz = (Class) filed.get(null);
-            if (claz.isPrimitive()){//如果这个class是基本数据类型
+            if (value.getClass() == String.class) {
                 params.put(key, value);
+            } else {
+                Field filed = value.getClass().getField("TYPE");
+                Class claz = (Class) filed.get(null);
+                if (claz.isPrimitive()){//如果这个class是基本数据类型
+                    params.put(key, value);
+                }
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

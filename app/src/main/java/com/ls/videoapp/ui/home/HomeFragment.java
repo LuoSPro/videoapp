@@ -1,25 +1,17 @@
 package com.ls.videoapp.ui.home;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.ItemKeyedDataSource;
 import androidx.paging.PagedList;
 import androidx.paging.PagedListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.ls.libnavannotation.FragmentDestination;
-import com.ls.videoapp.BR;
-import com.ls.videoapp.R;
 import com.ls.videoapp.exoplayer.PageListPlayDetector;
 import com.ls.videoapp.model.Feed;
 import com.ls.videoapp.ui.AbsListFragment;
@@ -28,12 +20,22 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
 import java.util.List;
 
-import static com.ls.videoapp.BR.feed;
-
 @FragmentDestination(pagerUrl = "main/tabs/home", asStarter = true)
 public class HomeFragment extends AbsListFragment<Feed, HomeViewModel> {
 
+    private static final String TAG = "HomeFragment";
+
     private PageListPlayDetector mPlayDetector;
+
+    private String mFeedType;
+
+    public static HomeFragment newInstance(String feedType) {
+        Bundle args = new Bundle();
+        args.putString("feedType",feedType);
+        HomeFragment fragment = new HomeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -45,12 +47,28 @@ public class HomeFragment extends AbsListFragment<Feed, HomeViewModel> {
             }
         });
         mPlayDetector = new PageListPlayDetector(this, mRecyclerView);
+        mViewModel.setFeedType(mFeedType);
+    }
+
+    /**
+     * 通过底部导航栏切换Fragment的时候，不会走Fragment的onPause()方法，而是走Fragment的onHiddenChanged()方法
+     * @param hidden
+     */
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden){
+            //隐藏的Fragment就调用mPlayDetector的onPause()方法，去通知播放视频
+            mPlayDetector.onPause();
+        }else{
+            mPlayDetector.onResume();
+        }
     }
 
     @Override
     public PagedListAdapter getAdapter() {
-        String feedType = getArguments() == null ? "all" : getArguments().getString("feedType");
-        return new FeedAdapter(getContext(), feedType){
+        mFeedType = getArguments() == null ? "all" : getArguments().getString("feedType");
+        return new FeedAdapter(getContext(), mFeedType){
             @Override
             public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
                 //当有新的item滚动到界面上时，如果他是视频，就把他添加到mPlayDetector中
@@ -112,12 +130,32 @@ public class HomeFragment extends AbsListFragment<Feed, HomeViewModel> {
     public void onPause() {
         mPlayDetector.onPause();
         super.onPause();
+        Log.e(TAG, "onPause: feedType --> " + mFeedType);
     }
 
+    /**
+     * 解决当我们pause或是resume的时候，它会调用栈里面的所有Fragment的pause或resume
+     */
     @Override
     public void onResume() {
-        //和Fragment的生命周期绑定
-        mPlayDetector.onResume();
         super.onResume();
+        //由于沙发Tab的几个子页面 复用了HomeFragment。
+        //我们需要判断下 当前页面 它是否有ParentFragment.
+        //当且仅当 它和它的ParentFragment均可见的时候，才能恢复视频播放
+        if (getParentFragment() != null) {
+            //嵌套了一个Fragment
+            if (getParentFragment().isVisible() && isVisible()) {
+                //其父类可见，且自己可见
+                Log.e(TAG, "onResume: feedtype:" + mFeedType);
+                //和Fragment的生命周期绑定
+                mPlayDetector.onResume();
+            }
+        } else {
+            if (isVisible()) {
+                Log.e(TAG, "onResume: feedtype:" + mFeedType);
+                //和Fragment的生命周期绑定
+                mPlayDetector.onResume();
+            }
+        }
     }
 }
