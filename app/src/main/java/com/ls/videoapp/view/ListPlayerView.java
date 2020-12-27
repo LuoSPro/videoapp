@@ -21,7 +21,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.ls.videoapp.R;
-import com.ls.libcommon.PixUtils;
+import com.ls.libcommon.utils.PixUtils;
 import com.ls.videoapp.exoplayer.IPlayTarget;
 import com.ls.videoapp.exoplayer.PageListPlay;
 import com.ls.videoapp.exoplayer.PageListPlayManager;

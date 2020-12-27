@@ -17,7 +17,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.ls.libcommon.PixUtils;
+import com.ls.libcommon.utils.PixUtils;
 
 public class CustomImageView extends AppCompatImageView {
     public CustomImageView(@NonNull Context context) {

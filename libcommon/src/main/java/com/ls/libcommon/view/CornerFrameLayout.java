@@ -1,4 +1,4 @@
-package com.ls.libcommon;
+package com.ls.libcommon.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,6 +6,8 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.ls.libcommon.utils.ViewHelper;
 
 /**
  * 自定义圆角布局

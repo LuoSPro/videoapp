@@ -22,7 +22,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ls.libcommon.CornerFrameLayout;
+import com.ls.libcommon.view.CornerFrameLayout;
 import com.ls.videoapp.R;
 import com.ls.videoapp.view.CustomImageView;
 

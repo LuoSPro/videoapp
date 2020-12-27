@@ -13,7 +13,7 @@
         <import type="com.ls.videoapp.utils.StringConvert"/>
     </data>
 
-    <com.ls.libcommon.CornerFrameLayout
+    <com.ls.libcommon.view.CornerFrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -127,5 +127,5 @@
 
         </LinearLayout>
 
-    </com.ls.libcommon.CornerFrameLayout>
+    </com.ls.libcommon.view.CornerFrameLayout>
 </layout>

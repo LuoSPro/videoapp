@@ -1,10 +1,12 @@
-package com.ls.libcommon;
+package com.ls.libcommon.utils;
 
 import android.content.res.TypedArray;
 import android.graphics.Outline;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+
+import com.ls.libcommon.R;
 
 /**
  * 解析自定义属性的工具类

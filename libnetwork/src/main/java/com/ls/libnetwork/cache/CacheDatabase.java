@@ -1,13 +1,10 @@
 package com.ls.libnetwork.cache;
 
-import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.ls.libcommon.AppGlobals;
+import com.ls.libcommon.global.AppGlobals;
 
 /**
  * Room数据库是通过注解的方式来实现相关的功能，在编译时通过annotationProcessor来生成一个他的实现类。

@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
-import com.ls.libcommon.AppGlobals;
+import com.ls.libcommon.global.AppGlobals;
 import com.ls.libnetwork.ApiResponse;
 import com.ls.libnetwork.ApiService;
 import com.ls.libnetwork.JsonCallback;

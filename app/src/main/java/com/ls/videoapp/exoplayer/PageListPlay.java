@@ -1,7 +1,6 @@
 package com.ls.videoapp.exoplayer;
 
 import android.app.Application;
-import android.content.Context;
 import android.view.LayoutInflater;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -9,10 +8,9 @@ import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.ls.libcommon.AppGlobals;
+import com.ls.libcommon.global.AppGlobals;
 import com.ls.videoapp.R;
 
 public class PageListPlay {

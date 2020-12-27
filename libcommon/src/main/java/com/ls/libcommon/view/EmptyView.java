@@ -1,4 +1,4 @@
-package com.ls.libcommon;
+package com.ls.libcommon.view;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.ls.libcommon.R;
 
 public class EmptyView extends LinearLayout {
 

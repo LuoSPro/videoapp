@@ -4,7 +4,7 @@ import android.content.res.AssetManager;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.ls.libcommon.AppGlobals;
+import com.ls.libcommon.global.AppGlobals;
 import com.ls.videoapp.model.BottomBar;
 import com.ls.videoapp.model.Destination;
 import com.ls.videoapp.model.SofaTab;

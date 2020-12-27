@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ls.libcommon.EmptyView;
+import com.ls.libcommon.view.EmptyView;
 import com.ls.videoapp.R;
 import com.ls.videoapp.databinding.LayoutRefreshViewBinding;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;

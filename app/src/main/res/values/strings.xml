@@ -7,4 +7,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login_text">QQ快捷登录</string>
+    <string name="has_follow">已关注</string>
+    <string name="unfollow">未关注</string>
+    <string name="feed_detail_hint">输入你的评论</string>
+    <string name="like">赞</string>
+    <string name="has_collect">已收藏</string>
+    <string name="collect">收藏</string>
+    <string name="share">分享</string>
+    <string name="feed_detail_type_image_title">标题</string>
 </resources>

@@ -1,8 +1,8 @@
-package com.ls.libcommon;
+package com.ls.libcommon.utils;
 
 import android.util.DisplayMetrics;
 
-import com.ls.libcommon.AppGlobals;
+import com.ls.libcommon.global.AppGlobals;
 
 public class PixUtils {
 

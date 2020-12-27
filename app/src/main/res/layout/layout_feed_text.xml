@@ -7,6 +7,10 @@
             name="feedText"
             type="java.lang.String" />
 
+        <variable
+            name="lines"
+            type="Integer" />
+
         <import type="android.text.TextUtils"/>
         <import type="android.view.View"/>
     </data>
